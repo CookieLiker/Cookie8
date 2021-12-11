@@ -1,7 +1,10 @@
 #include <iostream>
 
+#include "Application.h"
+
 int main()
 {
-    std::cout << "Hello World" << std::endl;
+    Cookie8::Application application;
+    application.Run();
     return 0;
 }
