@@ -2,7 +2,7 @@
 
 using namespace Cookie8;
 
-Application::Application() : window{sf::VideoMode(WIDTH, HEIGHT), "SFML works!"}
+Application::Application() : window{sf::VideoMode(WIDTH, HEIGHT), "SFML works!"}, chip8{}
 {
 }
 
