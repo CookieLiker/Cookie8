@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <string>
 
+#include "Display.h"
+
 using u8 = std::uint8_t;
 using u16 = std::uint16_t;
 
@@ -11,17 +13,18 @@ namespace Cookie8
 {
 class Chip8
 {
-  private:
+  public:
     static const unsigned int WIDTH = 64;
     static const unsigned int HEIGHT = 32;
 
+  private:
     // Memory
     std::array<u8, 0x1000> RAM = {0};
     std::array<u16, 0x10> stack = {0};
 
     // Registers
     std::array<u8, 0x10> V = {0};
-    u16 PC = 0x0000;
+    u16 PC = 0x200;
     u16 I = 0x0000;
     u8 SP = 0x00;
     u8 DT = 0x00;
@@ -31,7 +34,7 @@ class Chip8
     std::array<bool, 0x10> keys = {0};
 
     // Display
-    std::array<bool, WIDTH *HEIGHT> framebuffer = {0};
+    Display display;
 
     // NumberSprites
     std::array<u8, 0x10 * 5> font{
@@ -67,11 +70,14 @@ class Chip8
     InstructionInfo Decode(u16 instruction);
     void Execute(const InstructionInfo &instructionInfo);
 
+    void DRW(u16 x, u16 y, u16 n);
+
   public:
     unsigned int speed = 0;
 
     Chip8();
     void LoadProgram(std::string filepath);
     void Step();
+    Display &GetDisplay();
 };
 } // namespace Cookie8

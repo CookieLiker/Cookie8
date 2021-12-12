@@ -16,6 +16,7 @@ add_executable(
     src/main.cpp
     src/Application.cpp
     src/Chip8.cpp
+    src/Display.cpp
 )
 
 target_link_libraries(

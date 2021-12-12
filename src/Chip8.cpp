@@ -28,15 +28,14 @@ u16 Chip8::Fetch()
 Chip8::InstructionInfo Chip8::Decode(u16 instruction)
 {
     InstructionInfo instructionInfo{
-        0x0000,
-        (u16)(instruction & 0xFFF),
-        (u16)(instruction & 0xF),
-        (u16)(instruction & 0x0F00),
-        (u16)(instruction & 0x00F0),
-        (u16)(instruction & 0x00FF),
+        opcode : 0x0000,
+        nnn : (u16)(instruction & 0xFFF),
+        n : (u16)(instruction & 0xF),
+        x : (u16)((instruction & 0x0F00) >> 8),
+        y : (u16)((instruction & 0x00F0) >> 4),
+        kk : (u16)(instruction & 0x00FF),
     };
 
-    // TODO: Implement Decode
     switch (instruction & 0xF000)
     {
     case 0x0000:
@@ -62,7 +61,27 @@ Chip8::InstructionInfo Chip8::Decode(u16 instruction)
 
 void Chip8::Execute(const InstructionInfo &instructionInfo)
 {
-    // TODO: Implement Execute
+    switch (instructionInfo.opcode)
+    {
+    case 0x00E0:
+        display.Clear();
+        break;
+    case 0x1000:
+        PC = instructionInfo.nnn;
+        break;
+    case 0x6000:
+        V[instructionInfo.x] = (u8)instructionInfo.kk;
+        break;
+    case 0x7000:
+        V[instructionInfo.x] += (u8)instructionInfo.kk;
+        break;
+    case 0xA000:
+        I = instructionInfo.nnn;
+        break;
+    case 0xD000:
+        DRW(instructionInfo.x, instructionInfo.y, instructionInfo.n);
+        break;
+    }
 }
 
 void Chip8::LoadProgram(std::string filepath)
@@ -78,5 +97,42 @@ void Chip8::LoadProgram(std::string filepath)
 
 void Chip8::Step()
 {
-    // TODO: Implement Step
+    for (size_t i = 0; i < speed / 60; i++)
+    {
+        auto e = Decode(Fetch());
+        Execute(e);
+    }
+}
+
+Display &Chip8::GetDisplay()
+{
+    return display;
+}
+
+void Chip8::DRW(u16 x, u16 y, u16 n)
+{
+    V[0xF] = 0;
+    auto xCoord = V[x];
+    auto yCoord = V[y];
+
+    for (int r = 0; r < n; r++)
+    {
+        auto spriteStrip = RAM[I + r];
+
+        for (int c = 0; c < 8; c++)
+        {
+            auto pixelCoord = sf::Vector2u((xCoord + c) & 0x3F, (yCoord + r) & 0x1F);
+            auto currentPixel = display.GetPixel(pixelCoord);
+            auto spritePixel = (spriteStrip & 0x80) != 0;
+            auto newPixel = currentPixel != spritePixel;
+
+            if (currentPixel && !newPixel)
+            {
+                V[0xF] = 1;
+            }
+
+            display.SetPixel(pixelCoord, newPixel);
+            spriteStrip <<= 1;
+        }
+    }
 }
