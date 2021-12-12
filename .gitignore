@@ -2,6 +2,7 @@
 build/
 .vscode/
 .vs/
+.cache
 
 # Files
 compile_commands.json

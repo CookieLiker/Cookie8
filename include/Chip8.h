@@ -52,7 +52,12 @@ class Chip8
         0xF0, 0x80, 0xF0, 0x80, 0x80  // F
     };
 
+    u16 Fetch();
+    u16 Decode(u16 instruction);
+    void Execute(u16 opcode);
+
   public:
     Chip8();
+    void Step();
 };
 } // namespace Cookie8
