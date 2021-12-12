@@ -1,6 +1,9 @@
 #include "Chip8.h"
 
+#include <fstream>
 #include <iostream>
+#include <iterator>
+#include <vector>
 
 using namespace Cookie8;
 
@@ -31,6 +34,17 @@ u16 Chip8::Decode(u16 instruction)
 void Chip8::Execute(u16 opcode)
 {
     // TODO: Implement Execute
+}
+
+void Chip8::LoadProgram(std::string filepath)
+{
+    std::basic_ifstream<char> file{filepath, std::ios::binary};
+    std::vector<u8> program = {std::istreambuf_iterator<char>{file}, {}};
+
+    for (size_t i = 0; i < program.size(); i++)
+    {
+        RAM.at(i + 0x200) = program[i];
+    }
 }
 
 void Chip8::Step()

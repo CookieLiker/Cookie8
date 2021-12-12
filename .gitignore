@@ -3,6 +3,7 @@ build/
 .vscode/
 .vs/
 .cache
+programs/
 
 # Files
 compile_commands.json

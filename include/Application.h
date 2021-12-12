@@ -16,7 +16,8 @@ class Application
     Chip8 chip8;
 
   public:
-    Application();
+    Application(int argc, char *argv[]);
+    void ProcessArguments(int argc, char *argv[]);
     void Run();
 };
 } // namespace Cookie8

@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cstdint>
+#include <string>
 
 using u8 = std::uint8_t;
 using u16 = std::uint16_t;
@@ -57,7 +58,10 @@ class Chip8
     void Execute(u16 opcode);
 
   public:
+    unsigned int speed = 0;
+
     Chip8();
+    void LoadProgram(std::string filepath);
     void Step();
 };
 } // namespace Cookie8
