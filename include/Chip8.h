@@ -53,9 +53,19 @@ class Chip8
         0xF0, 0x80, 0xF0, 0x80, 0x80  // F
     };
 
+    struct InstructionInfo
+    {
+        u16 opcode;
+        u16 nnn;
+        u16 n;
+        u16 x;
+        u16 y;
+        u16 kk;
+    };
+
     u16 Fetch();
-    u16 Decode(u16 instruction);
-    void Execute(u16 opcode);
+    InstructionInfo Decode(u16 instruction);
+    void Execute(const InstructionInfo &instructionInfo);
 
   public:
     unsigned int speed = 0;

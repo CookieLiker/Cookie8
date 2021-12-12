@@ -25,13 +25,42 @@ u16 Chip8::Fetch()
     return ((u16)hi << 8) | (u16)lo;
 }
 
-u16 Chip8::Decode(u16 instruction)
+Chip8::InstructionInfo Chip8::Decode(u16 instruction)
 {
+    InstructionInfo instructionInfo{
+        0x0000,
+        (u16)(instruction & 0xFFF),
+        (u16)(instruction & 0xF),
+        (u16)(instruction & 0x0F00),
+        (u16)(instruction & 0x00F0),
+        (u16)(instruction & 0x00FF),
+    };
+
     // TODO: Implement Decode
-    return 0;
+    switch (instruction & 0xF000)
+    {
+    case 0x0000:
+        instructionInfo.opcode = instruction;
+        break;
+
+    case 0x8000:
+        instructionInfo.opcode = instruction & 0xF00F;
+        break;
+
+    case 0xE000:
+    case 0xF000:
+        instructionInfo.opcode = instruction & 0xF0FF;
+        break;
+
+    default:
+        instructionInfo.opcode = instruction & 0xF000;
+        break;
+    }
+
+    return instructionInfo;
 }
 
-void Chip8::Execute(u16 opcode)
+void Chip8::Execute(const InstructionInfo &instructionInfo)
 {
     // TODO: Implement Execute
 }
