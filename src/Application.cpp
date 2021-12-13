@@ -38,6 +38,14 @@ void Application::Run()
                 window.close();
                 break;
 
+            case sf::Event::KeyPressed:
+                chip8.keypad.UpdateKey(event.key.code, true);
+                break;
+
+            case sf::Event::KeyReleased:
+                chip8.keypad.UpdateKey(event.key.code, false);
+                break;
+
             default:
                 break;
             }

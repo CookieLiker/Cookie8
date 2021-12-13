@@ -7,7 +7,7 @@
 
 using namespace Cookie8;
 
-Chip8::Chip8()
+Chip8::Chip8() : keypad{*this}
 {
     // Load the font into RAM
     for (size_t i = 0x050; i <= 0x09F; i++)
@@ -168,6 +168,11 @@ void Chip8::Execute(const InstructionInfo &ii)
         ADD(V[ii.x], V[ii.y], ii.x);
         break;
 
+    case 0xF00A:
+        halted = true;
+        haltRegister = ii.x;
+        break;
+
     default:
         std::cout << "Not implemented opcode: " << std::hex << ii.opcode << "\n";
     }
@@ -188,8 +193,11 @@ void Chip8::Step()
 {
     for (size_t i = 0; i < speed / 60; i++)
     {
-        auto e = Decode(Fetch());
-        Execute(e);
+        if (!halted)
+        {
+            auto e = Decode(Fetch());
+            Execute(e);
+        }
     }
 }
 
@@ -245,4 +253,15 @@ void Chip8::SkipIf(bool condition)
     {
         PC += 2;
     }
+}
+
+bool Chip8::IsHalted()
+{
+    return halted;
+}
+
+void Chip8::UnHalt(uint32_t key)
+{
+    V[haltRegister] = key;
+    halted = false;
 }

@@ -5,6 +5,7 @@
 #include <string>
 
 #include "Display.h"
+#include "Keypad.h"
 
 using u8 = std::uint8_t;
 using u16 = std::uint16_t;
@@ -35,6 +36,9 @@ class Chip8
 
     // Display
     Display display;
+
+    bool halted = false;
+    uint32_t haltRegister = 0;
 
     // NumberSprites
     std::array<u8, 0x10 * 5> font{
@@ -77,10 +81,13 @@ class Chip8
 
   public:
     unsigned int speed = 0;
+    Keypad keypad;
 
     Chip8();
     void LoadProgram(std::string filepath);
     void Step();
+    bool IsHalted();
+    void UnHalt(uint32_t key);
     Display &GetDisplay();
 };
 } // namespace Cookie8
