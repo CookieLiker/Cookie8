@@ -83,16 +83,10 @@ void Chip8::Execute(const InstructionInfo &ii)
         DRW(ii.x, ii.y, ii.n);
         break;
     case 0x3000:
-        if (V[ii.x] == ii.kk)
-        {
-            PC += 2;
-        }
+        SkipIf(V[ii.x] == ii.kk);
         break;
     case 0x4000:
-        if (V[ii.x] != ii.kk)
-        {
-            PC += 2;
-        }
+        SkipIf(V[ii.x] != ii.kk);
         break;
     case 0x2000:
         stack[++SP] = PC;
@@ -102,10 +96,7 @@ void Chip8::Execute(const InstructionInfo &ii)
         V[ii.x] = (rand() % 256) & ii.kk;
         break;
     case 0x5000:
-        if (V[ii.x] == V[ii.y])
-        {
-            PC += 2;
-        }
+        SkipIf(V[ii.x] == V[ii.y]);
         break;
     case 0x8005:
         SUB(V[ii.x], V[ii.y], ii.x);
@@ -159,6 +150,22 @@ void Chip8::Execute(const InstructionInfo &ii)
 
     case 0xF01E:
         I += V[ii.x];
+        break;
+
+    case 0x9000:
+        SkipIf(V[ii.x] != V[ii.y]);
+        break;
+
+    case 0x00EE:
+        PC = stack[SP--];
+        break;
+
+    case 0x8000:
+        V[ii.x] = V[ii.y];
+        break;
+
+    case 0x8004:
+        ADD(V[ii.x], V[ii.y], ii.x);
         break;
 
     default:
@@ -219,9 +226,9 @@ void Chip8::DRW(u16 x, u16 y, u16 n)
     }
 }
 
-void Chip8::ADD(u16 x, u16 y)
+void Chip8::ADD(u8 op1, u8 op2, u16 x)
 {
-    u16 result = (u16)V[x] + (u16)V[y];
+    u16 result = (u16)op1 + (u16)op2;
     V[x] = result & 0xFF;
     V[0xF] = result > 255;
 }
@@ -230,4 +237,12 @@ void Chip8::SUB(u8 op1, u8 op2, u16 x)
 {
     V[0xF] = op1 > op2;
     V[x] = op1 - op2;
+}
+
+void Chip8::SkipIf(bool condition)
+{
+    if (condition)
+    {
+        PC += 2;
+    }
 }
