@@ -71,6 +71,8 @@ class Chip8
     void Execute(const InstructionInfo &instructionInfo);
 
     void DRW(u16 x, u16 y, u16 n);
+    void ADD(u16 x, u16 y);
+    void SUB(u8 op1, u8 op2, u16 x);
 
   public:
     unsigned int speed = 0;
