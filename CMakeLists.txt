@@ -6,7 +6,6 @@ set(CXX_STANDARD 17)
 find_package(SFML 2.5 COMPONENTS system graphics audio REQUIRED)
 
 include_directories(
-    ${PROJECT_NAME}
     include
     ${SFML_INCLUDE_DIR}
 )
