@@ -31,9 +31,6 @@ class Chip8
     u8 DT = 0x00;
     u8 ST = 0x00;
 
-    // Keyboard
-    std::array<bool, 0x10> keys = {0};
-
     // Display
     Display display;
 
@@ -81,6 +78,8 @@ class Chip8
 
   public:
     unsigned int speed = 0;
+
+    // Keyboard
     Keypad keypad;
 
     Chip8();

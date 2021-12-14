@@ -67,37 +67,48 @@ void Chip8::Execute(const InstructionInfo &ii)
     case 0x00E0:
         display.Clear();
         break;
+
     case 0x1000:
         PC = ii.nnn;
         break;
+
     case 0x6000:
         V[ii.x] = (u8)ii.kk;
         break;
+
     case 0x7000:
         V[ii.x] += (u8)ii.kk;
         break;
+
     case 0xA000:
         I = ii.nnn;
         break;
+
     case 0xD000:
         DRW(ii.x, ii.y, ii.n);
         break;
+
     case 0x3000:
         SkipIf(V[ii.x] == ii.kk);
         break;
+
     case 0x4000:
         SkipIf(V[ii.x] != ii.kk);
         break;
+
     case 0x2000:
         stack[++SP] = PC;
         PC = ii.nnn;
         break;
+
     case 0xC000:
         V[ii.x] = (rand() % 256) & ii.kk;
         break;
+
     case 0x5000:
         SkipIf(V[ii.x] == V[ii.y]);
         break;
+
     case 0x8005:
         SUB(V[ii.x], V[ii.y], ii.x);
         break;
@@ -173,6 +184,34 @@ void Chip8::Execute(const InstructionInfo &ii)
         haltRegister = ii.x;
         break;
 
+    case 0xE0A1:
+        SkipIf(!keypad.GetKey(V[ii.x]));
+        break;
+
+    case 0xF007:
+        V[ii.x] = DT;
+        break;
+
+    case 0xF015:
+        DT = V[ii.x];
+        break;
+
+    case 0xF029:
+        I = 0x050 + V[ii.x] * 5;
+        break;
+
+    case 0xE09E:
+        SkipIf(keypad.GetKey(V[ii.x]));
+        break;
+
+    case 0xF018:
+        ST = V[ii.x];
+        break;
+
+    case 0xB000:
+        PC = ii.nnn + V[0];
+        break;
+
     default:
         std::cout << "Not implemented opcode: " << std::hex << ii.opcode << "\n";
     }
@@ -198,6 +237,16 @@ void Chip8::Step()
             auto e = Decode(Fetch());
             Execute(e);
         }
+    }
+
+    if (ST > 0)
+    {
+        ST--;
+    }
+
+    if (DT > 0)
+    {
+        DT--;
     }
 }
 
