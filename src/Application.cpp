@@ -1,5 +1,6 @@
 #include "Application.h"
 
+#include <filesystem>
 #include <iostream>
 
 using namespace Cookie8;
@@ -21,8 +22,24 @@ void Application::ProcessArguments(int argc, char *argv[])
         exit(0);
     }
 
+    if (!std::filesystem::exists(args[1]))
+    {
+        std::cout << "Not a valid filepath" << std::endl;
+        exit(0);
+    }
+
+    const auto &s = args[2];
+    bool isAValidSpeed =
+        !s.empty() && std::find_if(s.begin(), s.end(), [](unsigned char c) { return !std::isdigit(c); }) == s.end();
+
+    if (!isAValidSpeed)
+    {
+        std::cout << "Not a valid speed" << std::endl;
+        exit(0);
+    }
+
     chip8.LoadProgram(args[1]);
-    chip8.speed = (unsigned int)stoi(args[2]);
+    chip8.speed = stoi(args[2]);
 }
 
 void Application::Run()
